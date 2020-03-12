@@ -1,6 +1,7 @@
 (ns adgoji.aws.requests
   (:require
    [adgoji.aws.util :refer [getx]]
+   [adgoji.aws.creds :as creds]
    [adgoji.cognitect.aws.util :as aws.util]
    [adgoji.cognitect.aws.signers :as aws.signers]
    [clojure.data.xml :as xml]
@@ -50,5 +51,5 @@
 (defn request-template->request-map [creds template template-replacements]
   (let [{:keys [request auth-info]} (with-macro-replacements template template-replacements)]
     (with-auth-headers
-      (merge auth-info (creds->simple-aws-api-creds creds))
+      (merge auth-info (creds/creds->simple-aws-api-creds creds))
       request)))
