@@ -11,10 +11,10 @@
              :body "Action=AssumeRole&Version=2010-05-15&=%7B%3ARoleSessionName%20%3Aargs%2Frole-session-name%2C%20%3ARoleArn%20%3Aargs%2Frole-arn%7D",
              :hostname "sts.amazonaws.com"}})
 
-(defn assume-role-request [creds {:keys [role-arn session-name]}]
+(defn assume-role-request [creds {:keys [role-arn session-name region]}]
   (aws-requests/request-template->request-map creds
                                               assume-role-template
-                                              {:region :us-east-1
+                                              {:region region
                                                :args/role-arn role-arn
                                                :args/role-session-name session-name}))
 
