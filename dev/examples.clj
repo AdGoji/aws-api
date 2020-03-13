@@ -36,24 +36,25 @@
 
 (def creds (adgoji.aws.creds/get-profile-creds "production"))
 
-(def sts-client (aws/client {:api :sts
-                             :credentials-provider
-                             (reify cognitect.aws.credentials/CredentialsProvider
-                               (fetch [_]
-                                 (adgoji.aws.creds/creds->aws-api-creds creds)))}))
+
+(def client (aws/client {:api :sts
+                         :credentials-provider
+                         (reify cognitect.aws.credentials/CredentialsProvider
+                           (fetch [_]
+                             (adgoji.aws.creds/creds->aws-api-creds creds)))}))
 
 ;; Explore ops
-(keys (aws/ops sts-client))
+(keys (aws/ops client))
 
 ;; Choose op, an read doc
-(aws/doc sts-client :AssumeRole)
+(aws/doc client :AssumeRole)
 
 
 ;; Try to invoke the API via the cognitect client
 
 (def my-role-arn "arn:aws:iam::**:role/MyRole")
-(aws/invoke sts-client {:op :AssumeRole :request {:RoleSessionName "me"
-                                                  :RoleArn my-role-arn}})
+(aws/invoke client {:op :AssumeRole :request {:RoleSessionName "me"
+                                              :RoleArn my-role-arn}})
 ;; If it works, create a request template by printing it to the repl and pasting it below
 
 (prn (request-template client :sts :us-east-1 {:op :AssumeRole :request {:RoleSessionName :args/role-session-name
