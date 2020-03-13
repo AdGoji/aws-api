@@ -44,7 +44,10 @@
     (update-in template [:request :body]
             (fn [body]
               (reduce-kv (fn [acc k v]
-                           (clojure.string/replace acc (aws.signers/uri-encode (str k)) (aws.signers/uri-encode v)))
+                           (let [acc0 (clojure.string/replace acc (aws.signers/uri-encode (str k)) (aws.signers/uri-encode v))]
+                             (when (= acc acc0)
+                               (throw (ex-info (str "No match found for " k " in template")  {:template template})))
+                             acc0))
                          body
                          (dissoc replacements :region))))))
 
