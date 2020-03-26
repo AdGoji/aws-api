@@ -32,15 +32,18 @@
                               (aws.signers/signature auth-info request))]
     (assoc-in request [:headers "authorization"] authorization)))
 
+
 (defn with-macro-replacements [template {:keys [region] :as replacements}]
   (let [template
-        (let [template-region (get-in template [:auth-info :region])
-              region (name region)
-              hostname (clojure.string/replace (get-in template [:request :hostname]) template-region region)]
-          (-> template
-              (assoc-in [:auth-info :region] region)
-              (assoc-in [:auth-info :hostname] hostname)
-              (assoc-in [:request :hostname] hostname)))]
+        (if region
+          (let [template-region (get-in template [:auth-info :region])
+                region (name region)
+                hostname (clojure.string/replace (get-in template [:request :hostname]) template-region region)]
+            (-> template
+                (assoc-in [:auth-info :region] region)
+                (assoc-in [:auth-info :hostname] hostname)
+                (assoc-in [:request :hostname] hostname)))
+          template)]
     (update-in template [:request :body]
             (fn [body]
               (reduce-kv (fn [acc k v]
