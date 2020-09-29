@@ -17,7 +17,7 @@
      :cljs (cljs-time.core/now)))
 
 (defn with-auth-headers [auth-info {:keys [hostname headers] :as request}]
-  (let [session-token (getx auth-info :session-token)
+  (let [session-token (get auth-info :session-token)
         x-amz-date (aws.util/format-date aws.util/x-amz-date-format (now))
         request (assoc request :headers (cond-> (merge {"content-type" "application/x-www-form-urlencoded; charset=utf-8"
                                                         "host" hostname
